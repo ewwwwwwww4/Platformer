@@ -17,7 +17,7 @@ public class HealthPointCTRL : MonoBehaviour
     }
 
     // Start is called before the first frame update
-  
+
     // Update is called once per frame
     void Update()
     {
@@ -38,7 +38,7 @@ public class HealthPointCTRL : MonoBehaviour
             }
             else
             {
-                damage_Coroutine = StartCoroutine(Damage_Over_Time(5, 2)); 
+                damage_Coroutine = StartCoroutine(Damage_Over_Time(5, 2));
             }
 
         }

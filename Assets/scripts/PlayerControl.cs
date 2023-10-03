@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class PlayerControl : MonoBehaviour
 {
@@ -16,12 +19,19 @@ public class PlayerControl : MonoBehaviour
     public float gravityScale = 5f;  
     public float gravityFall = 40f;
 
+    //private bool enterAllowed;
+    //private string sceneToLoad;
+    public string targetSceneName = "the end";
+
+    private int life = 3;
+
     bool jump = false;  
     bool doubleJump; 
 
-    Animator myAnim;  
+    Animator myAnim;
 
-    
+    public GameObject life01, life02, life03;
+
     void Start()
     {
         myBody = GetComponent<Rigidbody2D>();  
@@ -32,6 +42,8 @@ public class PlayerControl : MonoBehaviour
     void Update()
     {
         horizontalMove = Input.GetAxis("Horizontal");
+
+       
 
         if (grounded && !Input.GetButton("Jump"))
         {
@@ -59,7 +71,6 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    
     void FixedUpdate()
     {
         float moveSpeed = horizontalMove * speed;  
@@ -99,4 +110,52 @@ public class PlayerControl : MonoBehaviour
 
         myBody.velocity = new Vector3(moveSpeed, myBody.velocity.y, 0f); 
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Trap")
+        {
+            if (transform.position.y > collision.gameObject.transform.position.y)
+            {
+                life--;
+                Life();
+            }
+        }
+
+        void Life()
+        {
+            if (life == 3)
+            {
+                life03.SetActive(true);
+                life02.SetActive(true);
+                life01.SetActive(true);
+            }
+            if (life == 2)
+            {
+                life03.SetActive(false);
+                life02.SetActive(true);
+                life01.SetActive(true);
+            }
+            if (life == 1)
+            {
+                life03.SetActive(false);
+                life02.SetActive(false);
+                life01.SetActive(true);
+            }
+            if (life < 1)
+            {
+                life03.SetActive(false);
+                life02.SetActive(false);
+                life01.SetActive(false);
+                //sceneToLoad = "the end";
+                // enterAllowed = true;
+                SceneManager.LoadScene(targetSceneName);
+            }
+        }
+
+
+    }
+
 }
+
+
