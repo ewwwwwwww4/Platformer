@@ -122,6 +122,11 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
+        if (collision.gameObject.tag == "DDL")
+        {
+            SceneManager.LoadScene(targetSceneName);
+        }
+
         void Life()
         {
             if (life == 3)

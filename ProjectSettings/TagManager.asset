@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Trap
+  - DDL
   layers:
   - Default
   - TransparentFX
