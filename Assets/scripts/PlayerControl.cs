@@ -23,19 +23,23 @@ public class PlayerControl : MonoBehaviour
     //private string sceneToLoad;
     public string targetSceneName = "the end";
 
+    public string targetSceneName2 = "Lv.2";
+
     private int life = 3;
 
     bool jump = false;  
     bool doubleJump; 
 
     Animator myAnim;
+    SpriteRenderer myRend;
 
     public GameObject life01, life02, life03;
 
     void Start()
     {
         myBody = GetComponent<Rigidbody2D>();  
-        myAnim = GetComponent<Animator>();  
+        myAnim = GetComponent<Animator>();
+        myRend = GetComponent<SpriteRenderer>();
     }
 
     
@@ -60,14 +64,20 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        
-        if (horizontalMove > 0.2f || horizontalMove < -0.2f)
+
+        if (horizontalMove > 0.2f)
         {
-            myAnim.SetBool("running", true);  
+            myAnim.SetBool("running", true);
+            myRend.flipX = false;
+        }
+        else if (horizontalMove < -0.2f)
+        {
+            myAnim.SetBool("running", true);
+            myRend.flipX = true;
         }
         else
         {
-            myAnim.SetBool("running", false);  
+            myAnim.SetBool("running", false);
         }
     }
 
@@ -127,6 +137,10 @@ public class PlayerControl : MonoBehaviour
             SceneManager.LoadScene(targetSceneName);
         }
 
+        if (collision.gameObject.tag == "Door1")
+        {
+            SceneManager.LoadScene(targetSceneName2);
+        }
         void Life()
         {
             if (life == 3)
