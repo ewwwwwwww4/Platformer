@@ -25,6 +25,9 @@ public class PlayerControl : MonoBehaviour
 
     public string targetSceneName2 = "Lv.2";
 
+    public string targetSceneName3 = "win";
+
+
     private int life = 3;
 
     bool jump = false;  
@@ -140,6 +143,11 @@ public class PlayerControl : MonoBehaviour
         if (collision.gameObject.tag == "Door1")
         {
             SceneManager.LoadScene(targetSceneName2);
+        }
+
+        if (collision.gameObject.tag == "Door2")
+        {
+            SceneManager.LoadScene(targetSceneName3);
         }
         void Life()
         {

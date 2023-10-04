@@ -16,9 +16,15 @@ public class enterdoor : MonoBehaviour
             sceneToLoad = "Lv.2";
             enterAllowed = true;
         }
+        else if (collision.GetComponent<door2>())
+            {
+                sceneToLoad = "win";
+                enterAllowed = true;
+            }
+
 
     }
-        private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
         {
             enterAllowed = false;
         }
