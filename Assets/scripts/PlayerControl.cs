@@ -7,17 +7,22 @@ using UnityEngine.SceneManagement;
 
 public class PlayerControl : MonoBehaviour
 {
-    float horizontalMove;  
-    public float speed = 2f;  
+    float horizontalMove;
+    public float speed = 2f;
 
-    Rigidbody2D myBody;  
+    Rigidbody2D myBody;
 
-    bool grounded = false;  
+    bool grounded = false;
 
-    public float castDist = 1f;  
-    public float jumpPower = 2f;  
-    public float gravityScale = 5f;  
+    public float castDist = 1f;
+    public float jumpPower = 2f;
+    public float gravityScale = 5f;
     public float gravityFall = 40f;
+
+
+    //public Transform bulletSpawnPoint;
+    //public GameObject bullerPrefab;
+  //  public float bullerSpeed = 10;
 
     //private bool enterAllowed;
     //private string sceneToLoad;
@@ -30,8 +35,10 @@ public class PlayerControl : MonoBehaviour
 
     private int life = 3;
 
-    bool jump = false;  
-    bool doubleJump; 
+    private Vector3 respawnPoint;
+
+    bool jump = false;
+    bool doubleJump;
 
     Animator myAnim;
     SpriteRenderer myRend;
@@ -40,29 +47,32 @@ public class PlayerControl : MonoBehaviour
 
     void Start()
     {
-        myBody = GetComponent<Rigidbody2D>();  
+        myBody = GetComponent<Rigidbody2D>();
         myAnim = GetComponent<Animator>();
         myRend = GetComponent<SpriteRenderer>();
+        respawnPoint = transform.position;
     }
 
-    
+
     void Update()
     {
         horizontalMove = Input.GetAxis("Horizontal");
 
-       
+      //  if (Input.GetKeyDown(KeyCode.Return))  {
+        //    var bullet = Instantiate(bullerPrefab,bulletSpawnPoint.position,bulletSpawnPoint.rotation);
+          //  bullet.GetComponent<Rigidbody2D>().velocity = bulletSpawnPoint.up * bullerSpeed;  }
 
         if (grounded && !Input.GetButton("Jump"))
         {
             doubleJump = false;
         }
-       
+
         if (Input.GetButtonDown("Jump"))
         {
             if (grounded || doubleJump)
             {
-                myAnim.SetBool("jumping", true); 
-                jump = true;  
+                myAnim.SetBool("jumping", true);
+                jump = true;
                 doubleJump = !doubleJump;
             }
         }
@@ -86,42 +96,42 @@ public class PlayerControl : MonoBehaviour
 
     void FixedUpdate()
     {
-        float moveSpeed = horizontalMove * speed;  
+        float moveSpeed = horizontalMove * speed;
 
-       
+
         if (jump)
         {
-            myBody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);  // 以冲量方式添加向上的力以执行跳跃
-            jump = false;  
+            myBody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+            jump = false;
         }
 
-        
+
         if (myBody.velocity.y >= 0)
         {
-            myBody.gravityScale = gravityScale;  
+            myBody.gravityScale = gravityScale;
         }
         else if (myBody.velocity.y < 0)
         {
-            myBody.gravityScale = gravityFall;  
+            myBody.gravityScale = gravityFall;
         }
 
-        
+
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, castDist);
 
-        Debug.DrawRay(transform.position, Vector2.down * castDist, Color.red);  
+        Debug.DrawRay(transform.position, Vector2.down * castDist, Color.red);
 
-        
+
         if (hit.collider != null && hit.transform.name == "Ground")
         {
-            myAnim.SetBool("jumping", false); 
-            grounded = true;  
+            myAnim.SetBool("jumping", false);
+            grounded = true;
         }
         else
         {
-            grounded = false;  
+            grounded = false;
         }
 
-        myBody.velocity = new Vector3(moveSpeed, myBody.velocity.y, 0f); 
+        myBody.velocity = new Vector3(moveSpeed, myBody.velocity.y, 0f);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -135,10 +145,6 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        if (collision.gameObject.tag == "DDL")
-        {
-            SceneManager.LoadScene(targetSceneName);
-        }
 
         if (collision.gameObject.tag == "Door1")
         {
@@ -149,6 +155,8 @@ public class PlayerControl : MonoBehaviour
         {
             SceneManager.LoadScene(targetSceneName3);
         }
+
+
         void Life()
         {
             if (life == 3)
@@ -182,7 +190,50 @@ public class PlayerControl : MonoBehaviour
 
 
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "DDL")
+        {
+            //SceneManager.LoadScene(targetSceneName);
+            transform.position = respawnPoint;
+            life--;
+            Life();
+        }
+        else if (collision.tag == "checkpoint")
+        {
+            respawnPoint = transform.position;
+        }
+        void Life()
+        {
+            if (life == 3)
+            {
+                life03.SetActive(true);
+                life02.SetActive(true);
+                life01.SetActive(true);
+            }
+            if (life == 2)
+            {
+                life03.SetActive(false);
+                life02.SetActive(true);
+                life01.SetActive(true);
+            }
+            if (life == 1)
+            {
+                life03.SetActive(false);
+                life02.SetActive(false);
+                life01.SetActive(true);
+            }
+            if (life < 1)
+            {
+                life03.SetActive(false);
+                life02.SetActive(false);
+                life01.SetActive(false);
+                //sceneToLoad = "the end";
+                // enterAllowed = true;
+                SceneManager.LoadScene(targetSceneName);
+            }
 
+        }
+    }
 }
-
 
